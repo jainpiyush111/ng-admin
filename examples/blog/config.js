@@ -20,6 +20,33 @@
     "use strict";
 
     var app = angular.module('myApp', ['ng-admin']);
+	
+	
+	// creating my directive
+	
+	/* myApp.directive('sendEmail', ['$location', function ($location) {
+    			return {
+    				restrict : 'E',
+    				scope : {
+    					post : '&'
+    				},
+    				link : function (scope) {
+    					scope.send = function () {
+    						//$location.path('/sendPost/' + scope.post().values.id);
+							console.log("Hello");
+						
+    					}; 
+						
+						scope.lastName="John";
+						
+    				},
+    				template : '<a class="btn btn-default" ng-click="send()"> RUN </a> '
+    			};
+    		}
+    	]);
+	*/
+	
+	
 
     // API Mapping
     app.config(['RestangularProvider', function (RestangularProvider) {
