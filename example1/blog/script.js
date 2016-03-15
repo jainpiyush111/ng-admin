@@ -58,6 +58,8 @@ myApp.config(['RestangularProvider', function (RestangularProvider) {
 		}
 	]);
 
+	
+
 myApp.directive("myCtrl", function () {
 
 	return {
@@ -71,8 +73,7 @@ myApp.directive("myCtrl", function () {
 		templateUrl : 'aggridInit.html',
 		controller : ['$scope', '$http', function ($scope, $http) {
 
-				$scope.columnDefs = [];
-				$scope.rowData = [];
+				
 
 				function init() {
 
@@ -91,7 +92,13 @@ myApp.directive("myCtrl", function () {
 
 					// changing column defination
 
-					var columnDefs = [];
+					var columnDefs = [{
+						headerName : "#",
+						width : 50,
+						cellRenderer : function (params) {
+							return params.node.id + 1;
+						}
+					}];
 					var arr = [];
 					console.log("Fields", $scope.fields);
 					arr = $scope.fields.split(',');
@@ -112,9 +119,14 @@ myApp.directive("myCtrl", function () {
 
 					console.log(" Url Name", $scope.url);
 					console.log(" Collection Name", $scope.collection);
-
-					$http.get($scope.url + $scope.collection).then(function (response) {
-						var resData = response.data.data;
+					
+					var data = {"CollectionName":$scope.collection , "databaseName":$scope.url};
+					console.log(data);
+					
+					$http.post("http://localhost:4000/api",data).then(function (response) {
+						
+						console.log("Response data",response);
+						var resData = response.data;
 						console.log(resData);
 						createNewDatasource(resData);
 					});
@@ -129,7 +141,7 @@ myApp.directive("myCtrl", function () {
 
 					var dataSource = {
 						//rowCount: ???, - not setting the row count, infinite paging will be used
-						pageSize : 10, // changing to number, as scope keeps it as a string
+						pageSize : 15, // changing to number, as scope keeps it as a string
 						getRows : function (params) {
 
 							var rowsThisPage = rowData.slice(params.startRow, params.endRow);
