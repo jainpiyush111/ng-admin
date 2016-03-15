@@ -6,39 +6,34 @@ myApp.config(['NgAdminConfigurationProvider', function (nga) {
 
 			var query = nga.entity('query').identifier(nga.field('_id'));
 			query.creationView().fields([
-					nga.field('search')
+					nga.field('name').label('Name'),
+					nga.field('desc').label('Description'),
+					nga.field('dburl').label('DB Url'),
+					nga.field('collection').label('Collection Name'),
+					nga.field('cols').label('Column Names')
 				]);
 			query.listView().fields([
-					nga.field('_id').isDetailLink(true),
-					nga.field('search')
+					nga.field('name').label('Name').isDetailLink(true),
+					nga.field('desc').label('Description'),
+					nga.field('dburl').label('DB Url'),
+					nga.field('collection').label('Collection Name'),
+					nga.field('cols').label('Column Names')
 				]);
 			query.showView().fields([
-					nga.field('_id').isDetailLink(true),
-					nga.field('search')
+					nga.field('name').label('Name').isDetailLink(true),
+					nga.field('desc').label('Description'),
+					nga.field('dburl').label('DB Url'),
+					nga.field('collection').label('Collection Name'),
+					nga.field('cols').label('Column Names')
 				]);
 			query.editionView().fields([
-					nga.field('_id').isDetailLink(true),
-					nga.field('search')
+					nga.field('name').label('Name'),
+					nga.field('desc').label('Description'),
+					nga.field('dburl').label('DB Url'),
+					nga.field('collection').label('Collection Name'),
+					nga.field('cols').label('Column Names')
 				]);
 			admin.addEntity(query)
-
-			var product = nga.entity('product').identifier(nga.field('_id'));
-			product.creationView().fields([
-					nga.field('search')
-				]);
-			product.listView().fields([
-					nga.field('_id').isDetailLink(true),
-					nga.field('search')
-				]);
-			product.showView().fields([
-					nga.field('_id').isDetailLink(true),
-					nga.field('search')
-				]);
-			product.editionView().fields([
-					nga.field('_id').isDetailLink(true),
-					nga.field('search')
-				]);
-			admin.addEntity(product)
 
 			nga.configure(admin);
 
@@ -69,48 +64,64 @@ myApp.directive("myCtrl", function () {
 
 		restrict : "E",
 		scope : {
+			url : '=url',
 			collection : '=collection',
-			fields : '@fields'
+			fields : '=fields'
 		},
 		templateUrl : 'aggridInit.html',
 		controller : ['$scope', '$http', function ($scope, $http) {
 
-				var arr = $scope.fields.split(',');
+				$scope.columnDefs = [];
+				$scope.rowData = [];
 
-				var columnDefs = [];
+				function init() {
 
-				for (i = 0; i < arr.length; i++) {
-					columnDefs.push({
-						headerName : arr[i].toUpperCase(),
-						field : arr[i],
-						width : 150,
-						sortingOrder : ['asc', 'desc']
-					});
-				}
-
-				$scope.gridOptions = {
-					columnDefs : columnDefs,
-					rowData : null,
-					enableSorting : true,
-					sortingOrder : ['desc', 'asc', null]
-
-				};
-
-				var rowData = [];
-
-				$scope.create = function () {
-
-					$http.get("http://localhost:3000/api/" + $scope.collection).then(function (response) {
-
-						console.log(response);
-						rowData = response.data.data;
-						console.log(rowData);
-						createNewDatasource();
-					});
+					$scope.gridOptions = {
+						columnDefs : null,
+						rowData : null,
+						enableSorting : true,
+						sortingOrder : ['desc', 'asc', null]
+					};
 
 				}
 
-				function createNewDatasource() {
+				init();
+
+				$scope.onRun = function () {
+
+					// changing column defination
+
+					var columnDefs = [];
+					var arr = [];
+					console.log("Fields", $scope.fields);
+					arr = $scope.fields.split(',');
+
+					for (i = 0; i < arr.length; i++) {
+						columnDefs.push({
+							headerName : arr[i].toUpperCase(),
+							field : arr[i],
+							width : 150,
+							sortingOrder : ['asc', 'desc']
+						});
+					}
+					console.log("Column defs ", columnDefs);
+
+					$scope.gridOptions.api.setColumnDefs(columnDefs);
+
+					// changing row data
+
+					console.log(" Url Name", $scope.url);
+					console.log(" Collection Name", $scope.collection);
+
+					$http.get($scope.url + $scope.collection).then(function (response) {
+						var resData = response.data.data;
+						console.log(resData);
+						createNewDatasource(resData);
+					});
+
+				}
+
+				function createNewDatasource(rowData) {
 					if (!rowData) {
 						// in case user selected 'onPageSizeChanged()' before the json was loaded
 						return;
@@ -125,7 +136,7 @@ myApp.directive("myCtrl", function () {
 
 							console.log(rowsThisPage);
 							var lastRow = -1;
-							params.successCallback(rowsThisPage);
+							params.successCallback(rowsThisPage, lastRow);
 
 						}
 

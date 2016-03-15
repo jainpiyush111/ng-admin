@@ -26,13 +26,11 @@
     </form>
 </div>
 
-
-
 <div ng-If='formController.entity.name()=="query"'>
 	<div class="row">
 		<div class="col-lg-12">
 
-		<my-Ctrl collection='entry.values["search"]' fields='_id,search'> </my-Ctrl>
+		<my-Ctrl url='entry.values["dburl"]' collection='entry.values["collection"]' fields='entry.values["cols"]'> </my-Ctrl>
 		
 		</div>
 	</div>
