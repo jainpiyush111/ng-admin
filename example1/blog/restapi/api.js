@@ -37,7 +37,7 @@ if (Meteor.isServer) {
   Api.addCollection(productsCollection);
   
   
-  productsCollection = new Mongo.Collection("product", { _driver: localdb });
+  productsCollection = new Mongo.Collection("datasource", { _driver: localdb });
   Api.addCollection(productsCollection);
   productsCollection = new Mongo.Collection("admin", { _driver: localdb });
   Api.addCollection(productsCollection);

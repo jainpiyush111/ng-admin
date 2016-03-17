@@ -26,12 +26,35 @@
     </form>
 </div>
 
+
+
+
+
+
+
+
+
+
+
+
 <div ng-If='formController.entity.name()=="query"'>
 	<div class="row">
 		<div class="col-lg-12">
 
 		<my-Ctrl url='entry.values["dburl"]' collection='entry.values["collection"]' fields='entry.values["cols"]'> </my-Ctrl>
 		
+		</div>
+	</div>
+</div>
+
+
+<div ng-If='formController.entity.name()=="datasource"'>
+	<div class="row">
+		<div class="col-lg-12">
+
+		<div ng-controller="myCtrl">
+			<button type="button"  ng-click='onDiscover()'  class="btn btn-primary"> Discover Columns </button>
+		</div>
 		</div>
 	</div>
 </div>
